@@ -1,5 +1,10 @@
-import 'package:flutter/material.dart';
+ import 'package:flutter/material.dart';
+import 'package:quizzler/question.dart';
 
+import 'quiz_brain.dart';
+
+
+QuizBrain quizBrain=QuizBrain();
 void main() => runApp(Quizzler());
 
 class Quizzler extends StatelessWidget {
@@ -25,6 +30,19 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
+List<Icon> scoreKepper=[];
+
+void checkAnswer(bool userPickedAnswer){
+  bool correctanswer=quizBrain.getQuestionAnswer();
+  if (correctanswer==userPickedAnswer){
+    scoreKepper.add(Icon(Icons.check,color: Colors.green,));
+
+  }
+  else{
+scoreKepper.add(Icon(Icons.close,color:Colors.red));
+  }
+}
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -37,7 +55,7 @@ class _QuizPageState extends State<QuizPage> {
             padding: EdgeInsets.all(10.0),
             child: Center(
               child: Text(
-                'This is where the question text will go.',
+                quizBrain.getQuestionText(),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 25.0,
@@ -61,8 +79,16 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
+               checkAnswer(true);
+
+               setState(() {
+                  quizBrain.nextQuestion();
+                });
+
+                }
+
                 //The user picked true.
-              },
+              ,
             ),
           ),
         ),
@@ -79,12 +105,20 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                //The user picked false.
+                checkAnswer(false);
+
+                setState(() {
+                  quizBrain.nextQuestion();
+                });
               },
             ),
           ),
         ),
-        //TODO: Add a Row here as your score keeper
+        Row(
+          children:scoreKepper
+
+
+        )
       ],
     );
   }
